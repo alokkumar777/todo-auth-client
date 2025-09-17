@@ -18,19 +18,36 @@ export default function Login() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        placeholder="Email"
-        value={form.email}
-        onChange={(e) => setForm({ ...form, email: e.target.value })}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={form.password}
-        onChange={(e) => setForm({ ...form, password: e.target.value })}
-      />
-      <button type="submit">Login</button>
-    </form>
+    <div className="container d-flex justify-content-center align-items-center min-vh-100">
+      <form className="w-25" onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label for="email" className="form-label">
+            Email address
+          </label>
+          <input
+            type="email"
+            id="email"
+            className="form-control"
+            placeholder="Email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
+        </div>
+        <div className="mb-3">
+          <label for="password" className="form-label">
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            className="form-control"
+            placeholder="Password"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          />
+          <button className="btn btn-primary mt-3 w-100" type="submit">Login</button>
+        </div>
+      </form>
+    </div>
   );
 }
