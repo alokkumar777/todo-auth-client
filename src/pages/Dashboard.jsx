@@ -80,43 +80,97 @@ export default function Dashboard() {
   };
 
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <div className="container d-flex flex-column align-items-center justify-content-center min-vh-100">
+      <div className="w-100" style={{ maxWidth: "600px" }}>
+        <h1 className="italic">Dashboard</h1>
 
-      <h2>Add Category</h2>
-      <CategoryForm onAdd={handleAddCategory} />
+        <div className="card mb-4">
+          <div className="card-body">
+            <h2 className="card-title h5 mb-3">Add Category</h2>
+            <CategoryForm onAdd={handleAddCategory} />
+          </div>
+        </div>
 
-      <h2>Add Task</h2>
-      <TaskForm categories={categories} onAdd={handleAddTask} />
+        <div className="card mb-4">
+          <div className="card-body">
+            <h2 className="card-title h5 mb-3">Add Task</h2>
+            <TaskForm categories={categories} onAdd={handleAddTask} />
+          </div>
+        </div>
 
-      <h2>Tasks</h2>
-      <ul>
-        {tasks.map((t) => (
-          <li key={t._id}>
-            <span
-              style={{ textDecoration: t.completed ? "line-through" : "none" }}
-            >
-              {t.title}
-            </span>
-            {" - "}
-            {t.categoryId?.name}
+        <div className="card mb-4">
+          <div className="card-body">
+            <h2 className="card-title h5 mb-3">Tasks</h2>
+            <ul className="list-group">
+              {tasks.map((t) => (
+                <li
+                  key={t._id}
+                  className="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <span
+                    style={{
+                      textDecoration: t.completed ? "line-through" : "none",
+                    }}
+                  >
+                    {t.title}
+                  </span>
+                  <span className="badge bg-secondary mx-2">
+                    {t.categoryId?.name}
+                  </span>
+                  <div>
+                    <button
+                      className="btn btn-success btn-sm me-2"
+                      onClick={() => toggleComplete(t)}
+                      title="Toggle Complete"
+                    >
+                      ✓
+                    </button>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => deleteTask(t._id)}
+                      title="Delete Task"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
 
-            <button onClick={() => toggleComplete(t)}>✓</button>
-            <button onClick={() => deleteTask(t._id)}>🗑️</button>
-          </li>
-        ))}
-      </ul>
-
-      <h2>Categories</h2>
-      <ul>
-        {categories.map((c) => (
-          <li key={c._id}>
-            {c.name}
-            <button onClick={() => editCategory(c)}>✏️</button>
-            <button onClick={() => deleteCategory(c._id)}>🗑️</button>
-          </li>
-        ))}
-      </ul>
+        <div className="card mb-4">
+          <div className="card-body">
+            <h2 className="card-title h5 mb-3">Categories</h2>
+            <ul className="list-group">
+              {categories.map((c) => (
+                <li
+                  key={c._id}
+                  className="list-group-item d-flex justify-content-between align-items-center"
+                >
+                  <span>{c.name}</span>
+                  <div>
+                    <button
+                      className="btn btn-primary btn-sm me-2"
+                      onClick={() => editCategory(c)}
+                      title="Edit Category"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => deleteCategory(c._id)}
+                      title="Delete Category"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

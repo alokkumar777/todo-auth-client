@@ -17,14 +17,17 @@ export default function CategoryForm({ onAdd }) {
     }
   };
 
-  return (
+return (
     <form onSubmit={handleSubmit}>
-      <input
-        placeholder="New Category"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <button type="submit">Add</button>
+        <label htmlFor="categoryName" className="form-label">Category Name</label>
+        <input
+            id="categoryName"
+            className="form-control mb-2"
+            placeholder="New Category"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+        />
+        <button type="submit" className="btn btn-primary w-100">Add</button>
     </form>
-  );
+);
 }
