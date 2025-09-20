@@ -5,6 +5,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Navbar from './components/Navbar';
+import AddCategoryPage from './pages/AddCategoryPage';
+import AddTaskPage from './pages/AddTaskPage';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -23,6 +25,14 @@ function App() {
           <Route
             path="/"
             element={<PrivateRoute><Dashboard /></PrivateRoute>}
+          />
+          <Route
+            path="/add-category"
+            element={<PrivateRoute><AddCategoryPage /></PrivateRoute>}
+          />
+          <Route
+            path="/add-task"
+            element={<PrivateRoute><AddTaskPage /></PrivateRoute>}
           />
         </Routes>
       </AuthProvider>
