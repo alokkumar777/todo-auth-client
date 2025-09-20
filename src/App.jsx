@@ -7,10 +7,11 @@ import Dashboard from './pages/Dashboard';
 import Navbar from './components/Navbar';
 import AddCategoryPage from './pages/AddCategoryPage';
 import AddTaskPage from './pages/AddTaskPage';
+import Loader from './components/Loader';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loader />;
   return user ? children : <Navigate to="/login" />;
 };
 

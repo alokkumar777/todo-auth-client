@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import api from "../api/axios";
 import Task from "../components/Task";
 import Category from "../components/Category";
+import Loader from "../components/Loader";
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,6 +21,8 @@ const Dashboard = () => {
         setCategories(categoriesRes.data);
       } catch (error) {
         console.error("Failed to fetch data", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -45,6 +49,10 @@ const Dashboard = () => {
       )
     );
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
