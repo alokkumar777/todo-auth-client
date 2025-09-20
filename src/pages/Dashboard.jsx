@@ -1,176 +1,98 @@
-import { useEffect, useState } from "react";
-import api from "../api/axios";
-import TaskForm from "../components/TaskForm";
-import CategoryForm from "../components/CategoryForm";
 
-export default function Dashboard() {
+import { useEffect, useState } from 'react';
+import api from '../api/axios';
+import CreateTask from '../components/CreateTask';
+import CreateCategory from '../components/CreateCategory';
+import Task from '../components/Task';
+import Category from '../components/Category';
+
+const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [tasksRes, categoriesRes] = await Promise.all([
+          api.get('/tasks'),
+          api.get('/categories'),
+        ]);
+        setTasks(tasksRes.data);
+        setCategories(categoriesRes.data);
+      } catch (error) {
+        console.error('Failed to fetch data', error);
+      }
+    };
     fetchData();
   }, []);
 
-  async function fetchData() {
-    try {
-      const resTasks = await api.get("/tasks");
-      const resCategories = await api.get("/categories");
-      setTasks(resTasks.data);
-      setCategories(resCategories.data);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  // handlers for tasks
-  async function toggleComplete(task) {
-    try {
-      const res = await api.put(`/tasks/${task._id}`, {
-        completed: !task.completed,
-      });
-      setTasks(tasks.map((t) => (t._id === task._id ? res.data : t)));
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async function deleteTask(id) {
-    try {
-      await api.delete(`/tasks/${id}`);
-      setTasks(tasks.filter((t) => t._id !== id));
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  // handlers for categories
-  async function editCategory(category) {
-    const newName = prompt("New name:", category.name);
-    if (!newName) return;
-
-    try {
-      const res = await api.put(`/categories/${category._id}`, {
-        name: newName,
-      });
-      setCategories(
-        categories.map((c) => (c._id === category._id ? res.data : c))
-      );
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async function deleteCategory(id) {
-    try {
-      await api.delete(`/categories/${id}`);
-      setCategories(categories.filter((c) => c._id !== id));
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  // Add category locally
-  const handleAddCategory = (newCategory) => {
-    setCategories([...categories, newCategory]);
-  };
-
-  // Add task locally
-  const handleAddTask = (newTask) => {
+  const handleTaskCreated = (newTask) => {
     setTasks([...tasks, newTask]);
   };
 
+  const handleCategoryCreated = (newCategory) => {
+    setCategories([...categories, newCategory]);
+  };
+
+  const handleTaskDeleted = (taskId) => {
+    setTasks(tasks.filter((task) => task._id !== taskId));
+  };
+
+  const handleCategoryDeleted = (categoryId) => {
+    setCategories(categories.filter((category) => category._id !== categoryId));
+  };
+
+  const handleTaskUpdated = (updatedTask) => {
+    setTasks(
+      tasks.map((task) => (task._id === updatedTask._id ? updatedTask : task))
+    );
+  };
+
+  const handleCategoryUpdated = (updatedCategory) => {
+    setCategories(
+      categories.map((category) =>
+        category._id === updatedCategory._id ? updatedCategory : category
+      )
+    );
+  };
+
   return (
-    <div className="container d-flex flex-column align-items-center justify-content-center min-vh-100">
-      <div className="w-100" style={{ maxWidth: "600px" }}>
-        <h1 className="italic">Dashboard</h1>
-
-        <div className="card mb-4">
-          <div className="card-body">
-            <h2 className="card-title h5 mb-3">Add Category</h2>
-            <CategoryForm onAdd={handleAddCategory} />
-          </div>
+    <div className="container mt-5">
+      <div className="row">
+        <div className="col-md-4">
+          <h2>Categories</h2>
+          <CreateCategory onCategoryCreated={handleCategoryCreated} />
+          <ul className="list-group mt-3">
+            {categories.map((category) => (
+              <Category
+                key={category._id}
+                category={category}
+                onCategoryDeleted={handleCategoryDeleted}
+                onCategoryUpdated={handleCategoryUpdated}
+              />
+            ))}
+          </ul>
         </div>
-
-        <div className="card mb-4">
-          <div className="card-body">
-            <h2 className="card-title h5 mb-3">Add Task</h2>
-            <TaskForm categories={categories} onAdd={handleAddTask} />
-          </div>
-        </div>
-
-        <div className="card mb-4">
-          <div className="card-body">
-            <h2 className="card-title h5 mb-3">Tasks</h2>
-            <ul className="list-group">
-              {tasks.map((t) => (
-                <li
-                  key={t._id}
-                  className="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  <span
-                    style={{
-                      textDecoration: t.completed ? "line-through" : "none",
-                    }}
-                  >
-                    {t.title}
-                  </span>
-                  <span className="badge bg-secondary mx-2">
-                    {t.categoryId?.name}
-                  </span>
-                  <div>
-                    <button
-                      className="btn btn-success btn-sm me-2"
-                      onClick={() => toggleComplete(t)}
-                      title="Toggle Complete"
-                    >
-                      ✓
-                    </button>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => deleteTask(t._id)}
-                      title="Delete Task"
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div className="card mb-4">
-          <div className="card-body">
-            <h2 className="card-title h5 mb-3">Categories</h2>
-            <ul className="list-group">
-              {categories.map((c) => (
-                <li
-                  key={c._id}
-                  className="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  <span>{c.name}</span>
-                  <div>
-                    <button
-                      className="btn btn-primary btn-sm me-2"
-                      onClick={() => editCategory(c)}
-                      title="Edit Category"
-                    >
-                      ✏️
-                    </button>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => deleteCategory(c._id)}
-                      title="Delete Category"
-                    >
-                      🗑️
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
+        <div className="col-md-8">
+          <h2>Tasks</h2>
+          <CreateTask
+            categories={categories}
+            onTaskCreated={handleTaskCreated}
+          />
+          <div className="mt-3">
+            {tasks.map((task) => (
+              <Task
+                key={task._id}
+                task={task}
+                onTaskDeleted={handleTaskDeleted}
+                onTaskUpdated={handleTaskUpdated}
+              />
+            ))}
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Dashboard;

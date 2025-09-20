@@ -1,53 +1,53 @@
-import { useState } from "react";
-import api from "../api/axios";
-import { useNavigate } from "react-router-dom";
 
-export default function Login() {
-  const [form, setForm] = useState({ email: "", password: "" });
+import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post("/auth/login", form);
-      localStorage.setItem("token", res.data.token);
-      navigate("/");
-    } catch (err) {
-      alert(err.response?.data?.msg || "Error");
+      await login({ email, password });
+      navigate('/');
+    } catch (error) {
+      console.error('Failed to login', error);
+      alert('Failed to login');
     }
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center min-vh-100">
-      <form className="w-25" onSubmit={handleSubmit}>
+    <div className="container mt-5">
+      <h2>Login</h2>
+      <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label for="email" className="form-label">
-            Email address
-          </label>
+          <label className="form-label">Email</label>
           <input
             type="email"
-            id="email"
             className="form-control"
-            placeholder="Email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
         <div className="mb-3">
-          <label for="password" className="form-label">
-            Password
-          </label>
+          <label className="form-label">Password</label>
           <input
             type="password"
-            id="password"
             className="form-control"
-            placeholder="Password"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
-          <button className="btn btn-primary mt-3 w-100" type="submit">Login</button>
         </div>
+        <button type="submit" className="btn btn-primary">Login</button>
       </form>
     </div>
   );
-}
+};
+
+export default Login;

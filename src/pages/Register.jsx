@@ -1,70 +1,64 @@
-import { useState } from "react";
-import api from "../api/axios";
-import { useNavigate } from "react-router-dom";
 
-export default function Register() {
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
+const Register = () => {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post("/auth/register", form);
-      localStorage.setItem("token", res.data.token);
-      navigate("/");
-    } catch (err) {
-      alert(err.response?.data?.msg || "Error");
+      await register(username, email, password);
+      navigate('/');
+    } catch (error) {
+      console.error('Failed to register', error);
+      alert('Failed to register');
     }
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center min-vh-100">
-      <form className="w-25" onSubmit={handleSubmit}>
+    <div className="container mt-5">
+      <h2>Register</h2>
+      <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="username" className="form-label">
-            Username
-          </label>
+          <label className="form-label">Username</label>
           <input
-            id="username"
+            type="text"
             className="form-control"
-            placeholder="Username"
-            value={form.username}
-            onChange={(e) => setForm({ ...form, username: e.target.value })}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
           />
         </div>
-
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">
-            Email
-          </label>
+          <label className="form-label">Email</label>
           <input
-            id="email"
             type="email"
             className="form-control"
-            placeholder="Email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
-
         <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
+          <label className="form-label">Password</label>
           <input
-            id="password"
             type="password"
             className="form-control"
-            placeholder="Password"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
-
-        <button className="btn btn-primary w-100" type="submit">
-          Register
-        </button>
+        <button type="submit" className="btn btn-primary">Register</button>
       </form>
     </div>
   );
-}
+};
+
+export default Register;
