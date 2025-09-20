@@ -1,6 +1,5 @@
-
-import { useState } from 'react';
-import api from '../api/axios';
+import { useState } from "react";
+import api from "../api/axios";
 
 const Task = ({ task, onTaskDeleted, onTaskUpdated }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -12,8 +11,8 @@ const Task = ({ task, onTaskDeleted, onTaskUpdated }) => {
       await api.delete(`/tasks/${task._id}`);
       onTaskDeleted(task._id);
     } catch (error) {
-      console.error('Failed to delete task', error);
-      alert('Failed to delete task');
+      console.error("Failed to delete task", error);
+      alert("Failed to delete task");
     }
   };
 
@@ -24,69 +23,113 @@ const Task = ({ task, onTaskDeleted, onTaskUpdated }) => {
       onTaskUpdated(res.data);
       setIsEditing(false);
     } catch (error) {
-      console.error('Failed to update task', error);
-      alert('Failed to update task');
+      console.error("Failed to update task", error);
+      alert("Failed to update task");
     }
   };
 
   const toggleComplete = async () => {
     try {
-      const res = await api.put(`/tasks/${task._id}`, { completed: !task.completed });
+      const res = await api.put(`/tasks/${task._id}`, {
+        completed: !task.completed,
+      });
       onTaskUpdated(res.data);
     } catch (error) {
-      console.error('Failed to update task', error);
-      alert('Failed to update task');
+      console.error("Failed to update task", error);
+      alert("Failed to update task");
     }
   };
 
   return (
-    <div className={`card mb-3 ${task.completed ? 'bg-light' : ''}`}>
-      <div className="card-body">
-        {isEditing ? (
-          <form onSubmit={handleUpdate}>
-            <div className="mb-3">
-              <label className="form-label">Title</label>
-              <input
-                type="text"
-                className="form-control"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
+    <div
+      className={`mb-4 p-4 rounded-lg shadow ${
+        task.completed ? "bg-gray-100" : "bg-white"
+      }`}
+    >
+      {isEditing ? (
+        <form onSubmit={handleUpdate} className="space-y-4">
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Title
+            </label>
+            <input
+              type="text"
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Description
+            </label>
+            <textarea
+              className="w-full px-3 py-2 border border-gray-300 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+            ></textarea>
+          </div>
+          <div className="flex space-x-3">
+            <button
+              type="submit"
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsEditing(false)}
+              className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded transition"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      ) : (
+        <>
+          <div className="flex justify-between items-center mb-2">
+            <h5
+              className={`text-lg font-semibold ${
+                task.completed ? "line-through text-gray-500" : "text-gray-900"
+              }`}
+            >
+              {task.title}
+            </h5>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => setIsEditing(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
+              >
+                Edit
+              </button>
+              <button
+                onClick={handleDelete}
+                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition"
+              >
+                Delete
+              </button>
             </div>
-            <div className="mb-3">
-              <label className="form-label">Description</label>
-              <textarea
-                className="form-control"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              ></textarea>
-            </div>
-            <button type="submit" className="btn btn-success me-2">Save</button>
-            <button type="button" className="btn btn-secondary" onClick={() => setIsEditing(false)}>Cancel</button>
-          </form>
-        ) : (
-          <>
-            <div className="d-flex justify-content-between">
-              <h5 className="card-title">{task.title}</h5>
-              <div>
-                <button className="btn btn-sm btn-primary me-2" onClick={() => setIsEditing(true)}>Edit</button>
-                <button className="btn btn-sm btn-danger" onClick={handleDelete}>Delete</button>
-              </div>
-            </div>
-            <p className="card-text">{task.description}</p>
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                checked={task.completed}
-                onChange={toggleComplete}
-              />
-              <label className="form-check-label">Completed</label>
-            </div>
-          </>
-        )}
-      </div>
+          </div>
+          <p
+            className={`mb-3 ${
+              task.completed ? "line-through text-gray-500" : "text-gray-700"
+            }`}
+          >
+            {task.description}
+          </p>
+          <label className="inline-flex items-center space-x-2 text-gray-700 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={task.completed}
+              onChange={toggleComplete}
+              className="form-checkbox h-5 w-5 text-blue-600"
+            />
+            <span>Completed</span>
+          </label>
+        </>
+      )}
     </div>
   );
 };

@@ -1,10 +1,9 @@
-
-import { useEffect, useState } from 'react';
-import api from '../api/axios';
-import CreateTask from '../components/CreateTask';
-import CreateCategory from '../components/CreateCategory';
-import Task from '../components/Task';
-import Category from '../components/Category';
+import { useEffect, useState } from "react";
+import api from "../api/axios";
+import CreateTask from "../components/CreateTask";
+import CreateCategory from "../components/CreateCategory";
+import Task from "../components/Task";
+import Category from "../components/Category";
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
@@ -14,13 +13,13 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const [tasksRes, categoriesRes] = await Promise.all([
-          api.get('/tasks'),
-          api.get('/categories'),
+          api.get("/tasks"),
+          api.get("/categories"),
         ]);
         setTasks(tasksRes.data);
         setCategories(categoriesRes.data);
       } catch (error) {
-        console.error('Failed to fetch data', error);
+        console.error("Failed to fetch data", error);
       }
     };
     fetchData();
@@ -57,12 +56,14 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row">
-        <div className="col-md-4">
-          <h2>Categories</h2>
+    <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="flex flex-col md:flex-row md:space-x-8">
+        <section className="md:w-1/3 mb-8 md:mb-0">
+          <h2 className="text-2xl font-semibold mb-4 text-gray-900">
+            Categories
+          </h2>
           <CreateCategory onCategoryCreated={handleCategoryCreated} />
-          <ul className="list-group mt-3">
+          <ul className="mt-4 space-y-3">
             {categories.map((category) => (
               <Category
                 key={category._id}
@@ -72,14 +73,14 @@ const Dashboard = () => {
               />
             ))}
           </ul>
-        </div>
-        <div className="col-md-8">
-          <h2>Tasks</h2>
+        </section>
+        <section className="md:w-2/3">
+          <h2 className="text-2xl font-semibold mb-4 text-gray-900">Tasks</h2>
           <CreateTask
             categories={categories}
             onTaskCreated={handleTaskCreated}
           />
-          <div className="mt-3">
+          <div className="mt-6 space-y-4">
             {tasks.map((task) => (
               <Task
                 key={task._id}
@@ -89,7 +90,7 @@ const Dashboard = () => {
               />
             ))}
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

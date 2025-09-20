@@ -1,54 +1,63 @@
-
-import { useState } from 'react';
-import api from '../api/axios';
+import { useState } from "react";
+import api from "../api/axios";
 
 const CreateTask = ({ categories, onTaskCreated }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [categoryId, setCategoryId] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [categoryId, setCategoryId] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post('/tasks', {
+      const res = await api.post("/tasks", {
         title,
         description,
         categoryId: categoryId || null,
       });
       onTaskCreated(res.data);
-      setTitle('');
-      setDescription('');
-      setCategoryId('');
+      setTitle("");
+      setDescription("");
+      setCategoryId("");
     } catch (error) {
-      console.error('Failed to create task', error);
-      alert('Failed to create task');
+      console.error("Failed to create task", error);
+      alert("Failed to create task");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="card p-3">
-      <div className="mb-3">
-        <label className="form-label">Title</label>
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white shadow-md rounded-lg p-6 max-w-lg mx-auto"
+    >
+      <div className="mb-5">
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Title
+        </label>
         <input
           type="text"
-          className="form-control"
+          className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
         />
       </div>
-      <div className="mb-3">
-        <label className="form-label">Description</label>
+      <div className="mb-5">
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Description
+        </label>
         <textarea
-          className="form-control"
+          className="w-full px-4 py-2 border border-gray-300 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          rows={4}
         ></textarea>
       </div>
-      <div className="mb-3">
-        <label className="form-label">Category</label>
+      <div className="mb-5">
+        <label className="block mb-2 text-sm font-medium text-gray-700">
+          Category
+        </label>
         <select
-          className="form-select"
+          className="w-full px-4 py-2 border border-gray-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
         >
@@ -60,7 +69,12 @@ const CreateTask = ({ categories, onTaskCreated }) => {
           ))}
         </select>
       </div>
-      <button type="submit" className="btn btn-primary">Create Task</button>
+      <button
+        type="submit"
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded shadow transition duration-200"
+      >
+        Create Task
+      </button>
     </form>
   );
 };
