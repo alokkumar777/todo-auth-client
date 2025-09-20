@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.VITE_API_BASE_URL,
+  baseURL: "https://todo-auth-backend-3.onrender.com/",
 });
 
 // Add JWT automatically
