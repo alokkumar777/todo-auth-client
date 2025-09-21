@@ -12,7 +12,7 @@ import Loader from './components/Loader';
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <Loader />;
-  return user ? children : <Navigate to="/login" />;
+  return user ? children : <Navigate to="/" />;
 };
 
 function App() {
